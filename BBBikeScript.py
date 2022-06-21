@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 from pandas import DataFrame as df
 import glob
+from key import bbike_key
 
 
 def main():
@@ -13,7 +14,7 @@ def main():
         endLat = df.iloc[-1, 0]
         endLong = df.iloc[-1, 1]
         
-        url = f"https://api.bbbike.org/api/0.2/bbbike/?appid=simra;startc_wgs84={startLong}%2C{startLat};startname=Brandenburger%20Tor;zielc_wgs84={endLong}%2C{endLat};zielname=Zionskirche;pref_seen=1;pref_speed=20;pref_cat=;pref_quality=;pref_specialvehicle=;scope=;output_as=gpx-track"
+        url = f"https://api.bbbike.org/api/0.2/bbbike/?appid={bbike_key};startc_wgs84={startLong}%2C{startLat};startname=Brandenburger%20Tor;zielc_wgs84={endLong}%2C{endLat};zielname=Zionskirche;pref_seen=1;pref_speed=20;pref_cat=;pref_quality=;pref_specialvehicle=;scope=;output_as=gpx-track"
         r = requests.get(url)
 
         csvName = file.replace("FilteredData","")
