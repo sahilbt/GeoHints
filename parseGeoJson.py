@@ -4,6 +4,7 @@ import pandas as pd
 from pandas import DataFrame as df
 import numpy as np
 import glob
+from decimal import *
 
 
 def main():
@@ -28,16 +29,38 @@ def main():
         segments = frame['segments']
         asString = str(segments[0])
         asString = asString.split(', "steps"')
-        asString = asString[0].split(", ")
-        asString = asString[1].replace('"duration": ', "")
-        duration = float(asString)
-        intervals = duration / (len(coordinatesAsString) - 1)
+        asString = asString[1].replace(": [ ", "", 1)
+        asString = asString.split("{")
+        asString.pop(0)
+        asString.pop(-1)
 
+        waypoints = []
+
+        for i in range(len(asString)):
+            curr = asString[i].split('"')
+            temp = []
+            temp.append(curr[4])
+            temp.append(curr[-1])
+            temp[0] = temp[0].replace(": ", "")
+            temp[0] = temp[0].replace(", ", "")
+            temp[0] = Decimal(temp[0])
+            temp[1] = temp[1].replace(": ", "")
+            temp[1] = temp[1].replace(" }, ", "")
+            temp[1] = json.loads(temp[1])
+            waypoints.append(temp)
+
+        times = [0]
         t = 0
-        times = []
-        for i in range(len(coordinatesAsString)):
-            times.append(t)
-            t = t+intervals
+        for j in range(len(waypoints)):
+            duration = waypoints[j][0]
+            points = waypoints[j][1]
+            num = points[1] - points[0]
+            interval = duration / num
+            t = times[-1]
+
+            for k in range(num):
+                t = t + interval
+                times.append(t)
 
 
 
