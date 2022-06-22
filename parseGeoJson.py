@@ -12,7 +12,6 @@ def main():
     allFiles = glob.glob("geoJSONData\*")
     for file in allFiles:
         #coordinate extraction
-        print(file)
         geo = gpd.read_file(file)
         frame = pd.DataFrame(geo)
         coordinatesLineString = frame["geometry"]
@@ -22,6 +21,7 @@ def main():
         coordinatesAsString = toString.split(", ")
         for i in range(0, len(coordinatesAsString)):
             coordinatesAsString[i] = coordinatesAsString[i].split(" ")
+            coordinatesAsString[i].reverse()
             #At this point, coordiantesAsString should be a 2D array with each entry containg a set 
             #of ordered lat/long pairs
 
@@ -64,9 +64,12 @@ def main():
 
 
 
+
+
+
         nparray = np.array(coordinatesAsString)
         times = np.array(times)
-        newFrame = df(nparray, columns = ["long", "lat"])
+        newFrame = df(nparray, columns = ["lat", "long"])
         newFrame["timeStamp"] = times
     
         name = file.replace("geoJSONData", "")
