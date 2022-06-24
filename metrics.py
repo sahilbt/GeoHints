@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas import DataFrame as df
 import matplotlib.pyplot as plt
 import descartes
 import geopandas as gpd
@@ -127,74 +128,12 @@ def calculateScore(recGrid, userGrid):
     for j in range(len(recGrid)):
         if(recGrid[j] == userGrid[j]): 
             match = match + 1
-    score  = 100 * (match / len(recGrid))
+    score  = (match / len(recGrid))
     return score
 #END OF DEF
 
 
-
-
-
-
-
-
 def main():
-    # #User and reccomeded path data converted to numpy arrays
-    # user = pd.read_csv("FilteredDataNewTime\VM2_-76660491-filtered.csv")
-    # recc = pd.read_csv("geoJSONCSV\VM2_-76660491-efficientpath.csv")
-
-    # user = user.to_numpy()
-    # recc = recc.to_numpy()
-
-    # gridcells = createGrid()
-
-    # #Putting User Time Stamps into a single array
-    # reccTimeStamps = []
-    # for i in range(len(recc)):
-    #     reccTimeStamps.append(recc[i][2])
-    # reccTimeStamps = np.array(reccTimeStamps)
-
-   
-
-    # #METRIC STUFF
-    # userEndTimeStamp = user[-1][2]
-    # reccEndTimeStamp = recc[-1][2]
-    # userGrid = []
-    # reccGrid = []
-
-
-    # #Find gridcells that eachpoint is contained within
-    # for i in range(len(user)):
-    #     userCurrentTimeStamp = user[i][2]
-    #     userCurrentPoint = Point(user[i][1], user[i][0])
-    #     reccIndex, reccClosestTime = findClosest(reccTimeStamps, userCurrentTimeStamp)
-    #     reccCurrentPoint = Point(recc[reccIndex][1], recc[reccIndex][0])
-
-    #     reccGrid.append(findContainingGrid(reccCurrentPoint, gridcells))
-    #     userGrid.append(findContainingGrid(userCurrentPoint, gridcells))
-
-    #     if(reccClosestTime == userEndTimeStamp):
-    #         break
-
-
-    # #Metric
-    # match = 0
-
-    # for j in range(len(reccGrid)):
-    #     if(reccGrid[j] == userGrid[j]): 
-    #         match = match + 1
-
-    # score  = 100 * (match / len(reccGrid))
-
-    # print(score)
-
-        
-
-    
-    #All files thing
-    # DO THIS TMRW, MAKE METRICS FOR ALL FILES
-    # HAVE A METRIC PER RIDE AND HAVE A METRIC DESCRIBINGF ALL RIDES
-
     allScores = []
 
     allReccomendedRides = glob.glob('geoJSONCSV\*')
@@ -215,12 +154,10 @@ def main():
 
         score = calculateScore(recGrid, userGrid)
 
-        allScores.append([file, score])
+        allScores.append(score)
 
-    for i in range(len(allScores)):
-        print(allScores[i])
-
-    print(len(allScores))
+    frame = df(allScores, columns = ['Percentage Overlap'])
+    frame.to_csv("data.csv", index = False)
 
 if __name__ == '__main__':
     main()
