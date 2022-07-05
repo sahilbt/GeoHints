@@ -67,10 +67,10 @@ def createGrid(edgeLength):
 
 
 #START OF DEF
-def findClosest(user, timeStamp):
-    absUser = np.abs(user - timeStamp)
+def findClosest(rec, timeStamp):
+    absUser = np.abs(rec - timeStamp)
     index = absUser.argmin()
-    return index, user[index]
+    return index, rec[index]
 #END OF DEF
 
 
@@ -86,8 +86,9 @@ def findContainingGrid(point, gridcells):
 def userDirectory(path):
     path = path.replace("geoJSONCSV", "")
     path = path.replace("efficientpath.csv", "")
+    name = path
     path = "FilteredDataNewTime" + path + "filtered.csv"
-    return path
+    return name, path
 #END OF DEF
 
 
@@ -133,12 +134,46 @@ def calculateScore(recGrid, userGrid):
 #END OF DEF
 
 
+#START OF DEF
+def calculateScore2(recGrid, user, edgeLength, gridcells):
+    match = 0
+    for i in range(len(user)):
+        oneOverCells = []
+        recCurrentGrid = recGrid[i]
+        userCurrentPoint = (user[i][0], user[i][1])
+        Npt = inverse_haversine(userCurrentPoint, edgeLength, Direction.NORTH)
+        Ept = inverse_haversine(userCurrentPoint, edgeLength, Direction.EAST)
+        Spt = inverse_haversine(userCurrentPoint, edgeLength, Direction.SOUTH)
+        Wpt = inverse_haversine(userCurrentPoint, edgeLength, Direction.WEST)
+
+        Npt = tuple(reversed(Npt))
+        Ept = tuple(reversed(Ept))
+        Spt = tuple(reversed(Spt))
+        Wpt = tuple(reversed(Wpt))
+
+        oneOverCells.append(findContainingGrid(Point(Npt), gridcells))
+        oneOverCells.append(findContainingGrid(Point(Ept), gridcells))
+        oneOverCells.append(findContainingGrid(Point(Spt), gridcells))
+        oneOverCells.append(findContainingGrid(Point(Wpt), gridcells))
+
+        for j in range(4):
+            if(oneOverCells[j] == recCurrentGrid):
+                match = match + 1
+
+    return match / len(user)
+#END OF DEF
+
+
 def main():
+    edgeLength = 4
+
     allScores = []
 
     allReccomendedRides = glob.glob('geoJSONCSV\*')
     for file in allReccomendedRides:
-        userDirectoryPath = userDirectory(file)
+        name, userDirectoryPath = userDirectory(file)
+        name = name.replace("\\", "")
+        name = name[:-1]
 
         rec = pd.read_csv(file)
         user = pd.read_csv(userDirectoryPath)
@@ -146,7 +181,7 @@ def main():
         user = user.to_numpy()
         rec = rec.to_numpy()
         
-        gridcells = createGrid(4)
+        gridcells = createGrid(edgeLength)
 
         recTimeStamps = getRecTimeStamps(rec)
 
@@ -154,9 +189,11 @@ def main():
 
         score = calculateScore(recGrid, userGrid)
 
-        allScores.append(score)
+        score2 = calculateScore2(recGrid, user, edgeLength, gridcells)
 
-    frame = df(allScores, columns = ['Percentage Overlap'])
+        allScores.append([name, score, score2,  user[-1][2], rec[-1][2]])
+
+    frame = df(allScores, columns = ['Ride','Percentage Overlap', 'Percentage Overlap - One Grid Over', 'User Ride Duration', 'Recomended Ride Duration'])
     frame.to_csv("data.csv", index = False)
 
 if __name__ == '__main__':
