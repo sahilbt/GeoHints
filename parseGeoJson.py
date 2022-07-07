@@ -38,21 +38,8 @@ def getTimeStampsAndDistance(frame):
     asString.pop(-1)
 
     waypoints = getWayPoints(asString)
-
-    times = [0]
-    t = 0
-    for j in range(len(waypoints)):
-        duration = waypoints[j][0]
-        points = waypoints[j][1]
-        num = points[1] - points[0]
-        interval = duration / num
-        t = times[-1]
-
-        for k in range(num):
-            t = t + interval
-            times.append(t)
-
-    return times
+    times, distances = calculateTimeDistance(waypoints)
+    return times, distances
 #END OF DEF
 
 
@@ -63,19 +50,46 @@ def getWayPoints(asString):
         curr = asString[i].split('"')
         temp = []
         temp.append(curr[4])
+        temp.append(curr[2])
         temp.append(curr[-1])
         temp[0] = temp[0].replace(": ", "")
         temp[0] = temp[0].replace(", ", "")
         temp[0] = Decimal(temp[0])
         temp[1] = temp[1].replace(": ", "")
-        temp[1] = temp[1].replace(" }, ", "")
-        temp[1] = json.loads(temp[1])
+        temp[1] = temp[1].replace(", ", "")
+        temp[1] = Decimal(temp[1])
+        temp[2] = temp[2].replace(": ", "")
+        temp[2] = temp[2].replace(" }, ", "")
+        temp[2] = json.loads(temp[2])
         waypoints.append(temp)
     return waypoints
 
 #END OF DEF
 
+#START OF DEF
+def calculateTimeDistance(waypoints):
+    times, distances = [0], [0]
+    t, d = 0, 0
 
+    for j in range(len(waypoints)):
+        duration = waypoints[j][0]
+        currDistance = waypoints[j][1]
+        points = waypoints[j][2]
+        num = points[1] - points[0]
+        interval = duration / num
+        interval2 = currDistance / num
+        t = times[-1]
+        d = distances[-1]
+
+        for k in range(num):
+            t = t + interval
+            d = d + interval2
+            times.append(t)
+            distances.append(d)
+
+    return times, distances
+
+#END OF DEF
 
 
 def main():
@@ -84,14 +98,13 @@ def main():
         geo = gpd.read_file(file)
         frame = pd.DataFrame(geo)
         coordinates = getCoordinates(frame)
-        times = getTimeStampsAndDistance(frame)
-
-
+        times, distances = getTimeStampsAndDistance(frame)
 
         nparray = np.array(coordinates)
         times = np.array(times)
         newFrame = df(nparray, columns = ["lat", "long"])
         newFrame["timeStamp"] = times
+        newFrame["Distance"] = distances
     
         name = file.replace("geoJSONData", "")
         name = name.replace(".geojson", "")
