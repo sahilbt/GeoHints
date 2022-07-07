@@ -10,11 +10,13 @@ import numpy as np
 from haversine import haversine, inverse_haversine, Direction
 from math import sqrt, pi
 
-#START OF DEF
+# START OF DEF
 def createGrid(edgeLength):
-    #Producing grid cells
+    # Creating grid cells given an edge length 
     gridcells = []
     columns = []
+
+    # Bounding box of 'Detailnetz-Strassenabschnitte.geojson' file
     xmin =  13.090246535756732
     ymin =  52.340436617775886
     xmax =  13.756924989951091
@@ -26,10 +28,14 @@ def createGrid(edgeLength):
     #Make first column
     while(topLeft[0] > ymin):
         newSquareBR = inverse_haversine(topLeft, hyp, 135*(pi/180))
+
+        #Grid cell dimensions
         sqxmin = topLeft[1]
         sqxmax = newSquareBR[1]
         sqymin = newSquareBR[0]
         sqymax = topLeft[0]
+
+        #Create polygon with dimensions
         square = shapely.geometry.box(sqxmin, sqymin, sqxmax, sqymax)
         gridcells.append(square)
         coords = list(square.exterior.coords)
@@ -49,11 +55,11 @@ def createGrid(edgeLength):
             sqymin = newSquareBR[0]
             sqymax = topLeft[0]
 
-            #create grid cell and add to gridcell array
+            #Create polygon with dimensions
             square = shapely.geometry.box(sqxmin, sqymin, sqxmax, sqymax)
             gridcells.append(square)
 
-            #get coordinates and flip them
+            #Get cooridinates of ploygon and flip them for easier use
             coords = list(square.exterior.coords)
             temp = []
             for i in range(len(coords)):
@@ -191,10 +197,10 @@ def main():
 
         score2 = calculateScore2(recGrid, user, edgeLength, gridcells)
 
-        allScores.append([name, score, score2,  user[-1][2], rec[-1][2]])
+        allScores.append([name, score, score2,  user[-1][2], rec[-1][2], user[-1][3], rec[-1][3]])
 
-    frame = df(allScores, columns = ['Ride','Percentage Overlap', 'Percentage Overlap - One Grid Over', 'User Ride Duration', 'Recomended Ride Duration'])
-    frame.to_csv("data.csv", index = False)
+    frame = df(allScores, columns = ['Ride','Percentage Overlap', 'Percentage Overlap - One Grid Over', 'User Ride Duration', 'Recommended Ride Duration', 'User Ride Distance', 'Recommended Ride Distance'])
+    frame.to_csv("results.csv", index = False)
 
 if __name__ == '__main__':
     main()
