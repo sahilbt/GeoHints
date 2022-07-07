@@ -73,7 +73,7 @@ def calculateTimeDistance(waypoints):
 
     for j in range(len(waypoints)):
         duration = waypoints[j][0]
-        currDistance = waypoints[j][1]
+        currDistance = waypoints[j][1] / 1000
         points = waypoints[j][2]
         num = points[1] - points[0]
         interval = duration / num
