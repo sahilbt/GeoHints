@@ -1,7 +1,6 @@
 import pandas as pd
 from pandas import DataFrame as df
 import matplotlib.pyplot as plt
-import descartes
 import geopandas as gpd
 from shapely.geometry import Point, Polygon
 import shapely
@@ -197,9 +196,9 @@ def main():
 
         score2 = calculateScore2(recGrid, user, edgeLength, gridcells)
 
-        allScores.append([name, score, score2,  user[-1][2], rec[-1][2], user[-1][3], rec[-1][3]])
+        allScores.append([name, user[0][4],score, score2,  user[-1][2], rec[-1][2], user[-1][3], rec[-1][3]])
 
-    frame = df(allScores, columns = ['Ride','Percentage Overlap', 'Percentage Overlap - One Grid Over', 'User Ride Duration', 'Recommended Ride Duration', 'User Ride Distance', 'Recommended Ride Distance'])
+    frame = df(allScores, columns = ['Ride', 'Starting Timestamp','Percentage Overlap', 'Percentage Overlap - One Grid Over', 'User Ride Duration', 'Recommended Ride Duration', 'User Ride Distance', 'Recommended Ride Distance'])
     frame.to_csv("results.csv", index = False)
 
 if __name__ == '__main__':

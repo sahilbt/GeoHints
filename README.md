@@ -25,3 +25,13 @@ pip install matplotlib
 pip install Shapely
 pip install haversine
 ```
+
+### **Running the Project**
+This project has a few scripts that are all used to get to the final result. To get started, begin by cloning the repository to your local files.
+
+#### **Short Run Through**
+This repository contains all of the files needed to simply get the final results immediately. If you would like to just get the results without any hassle, run the ```metrics.py``` script. This script takes care of all the calculations in calculating the various metrics for this project and will produce an output file contaning the results names ```results.csv```.
+
+
+#### **Long Run Through**
+If you wish to incorporate all the scripts and produce results from scratch, begin by deleting the contents of ```FilteredDataNewTime```, ```geoJSONCSV```, and ```geoJSONData``` while keeping the folder itself. Next stepseuhguhughrehgurehgreuoigh

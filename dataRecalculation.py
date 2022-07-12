@@ -54,13 +54,19 @@ def main():
         #Read file
         df = pd.read_csv(file)
 
+        #Old time data
+        timesOld = df['timeStamp']
+        timesOld = timesOld.to_numpy()
+        df['Unix Timestamp'] = timesOld
+
         #Recalculated data
         times = newTimeStamp(df)
         distances = calculateDistances(df)
 
+
         #Assigning newly calculated data back to the dataframe and exporting as a csv
         df = df.assign(timeStamp = times)
-        df['Distance'] = distances
+        df.insert(3, 'Distance', distances)
         path = file.replace("FilteredData", "FilteredDataNewTime")
         df.to_csv(path, index=False)
 
