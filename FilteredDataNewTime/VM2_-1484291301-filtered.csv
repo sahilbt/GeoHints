@@ -1,2 +1,2 @@
-lat,long,timeStamp,Distance
-52.55028017,13.42208376,0,0
+lat,long,timeStamp,Distance,Unix Timestamp
+52.55028017,13.42208376,0,0,1609801437257
