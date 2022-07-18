@@ -176,6 +176,7 @@ def main():
 
     allReccomendedRides = glob.glob('geoJSONCSV\*')
     for file in allReccomendedRides:
+        print(file)
         name, userDirectoryPath = userDirectory(file)
         name = name.replace("\\", "")
         name = name[:-1]

@@ -115,6 +115,7 @@ def main():
     allFiles = glob.glob("geoJSONData\*")
     for file in allFiles:
         #Read current GeoJSON file using geopandas
+        print(file)
         geo = gpd.read_file(file)
 
         #Convert to data frame
