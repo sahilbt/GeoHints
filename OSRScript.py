@@ -22,6 +22,7 @@ def main():
         #Generate request with OSR API
         #The user must have their own API KEY obtained from creating an OSR account
         #Please input this API KEY in the key.py file
+        print(file)
         url = f"https://api.openrouteservice.org/v2/directions/cycling-regular?api_key={osr_api_key}&start={startLong},{startLat}&end={endLong},{endLat}"
         r = requests.get(url)
 
