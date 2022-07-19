@@ -170,7 +170,7 @@ def calculateScore2(recGrid, user, edgeLength, gridcells):
 
 
 def main():
-    edgeLength = 4
+    edgeLength = 0.2
 
     allScores = []
 
@@ -200,7 +200,9 @@ def main():
         allScores.append([name, user[0][4],score, score2,  user[-1][2], rec[-1][2], user[-1][3], rec[-1][3]])
 
     frame = df(allScores, columns = ['Ride', 'Starting Timestamp','Percentage Overlap', 'Percentage Overlap - One Grid Over', 'User Ride Duration', 'Recommended Ride Duration', 'User Ride Distance', 'Recommended Ride Distance'])
-    frame.to_csv("results.csv", index = False)
+    path = "results"  + str(edgeLength) + "km.csv"
+    
+    frame.to_csv(path, index = False)
 
 if __name__ == '__main__':
     main()
