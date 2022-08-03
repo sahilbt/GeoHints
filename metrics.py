@@ -170,8 +170,8 @@ def calculateScore2(recGrid, user, edgeLength, gridcells):
 
 
 def main():
-    edgeLength = 0.2
-
+    edgeLength = 0.5
+    gridcells = createGrid(edgeLength)
     allScores = []
 
     allReccomendedRides = glob.glob('geoJSONCSV\*')
@@ -186,8 +186,6 @@ def main():
 
         user = user.to_numpy()
         rec = rec.to_numpy()
-        
-        gridcells = createGrid(edgeLength)
 
         recTimeStamps = getRecTimeStamps(rec)
 
